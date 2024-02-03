@@ -6,7 +6,41 @@
 
     <!-- ///////////////////////////////////////////////////////////// -->
 
-    <section class="w-full border flex flex-col items-center bg-[#effafa]">
+    <section
+      class="w-full border flex flex-col items-center bg-[#effafa] relative"
+    >
+      <div class="absolute top-[-35px] left-[190px] w-full flex " v-if="selectedFilter.length">
+        <div class="flex justify-between items-center w-[80%] h-16 border bg-[#fff] rounded-[15px] px-10">
+            <span
+          class="flex  items-center gap-5"
+        >
+          <span
+            class="px-2 bg-[#effafa] text-[#5ba4a4] flex justify-center items-center gap-x-3 rounded-[10px]"
+            v-for="(item, index) in selectedFilter"
+            :key="index"
+            >{{ item }}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-7 h-5  text-white bg-[#5ba4a4] rounded-[10px] cursor-pointer"
+              @click="close(item)"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </span>
+
+        </span>
+        <span class="text-gray-500 font-bold text-xl" @click="clear">clear</span>
+        </div>
+          
+      </div>
       <div
         class="lg:w-[80%] w-[90%] lg:h-40 h-72 mt-10 bg-white lg:flex items-center lg:justify-between rounded-[5px] lg:px-5 border-l-4 border-[#5ba4a4]"
         v-for="(cart, index) in filteredCards"
@@ -134,20 +168,43 @@ export default {
   },
   computed: {
     filteredCards() {
-    //   if(this.selectedFilter.length){
-    //     return this.cards.filter(item => item.span.includes(this.selectedFilter))
-    //   }else{
-    //     return this.cards
-    //   }
-    return this.cards
+      if (this.selectedFilter.length) {
+        return this.cards.filter((item) =>
+          item.span.some((word) => {
+            if (this.selectedFilter.includes(word)) {
+              return word;
+            }
+          })
+        );
+      } else {
+        return this.cards;
+      }
     },
   },
   methods: {
     filterCard(event) {
-      alert(event);
-      this.selectedFilter.push(event);
-      console.log(this.selectedFilter);
+      
+      if(!this.selectedFilter.includes(event)){
+        this.selectedFilter.push(event);
+      }
+      
+      
     },
+
+    close(item){
+        this.selectedFilter=this.selectedFilter.filter(word =>{
+            if(word==item){
+                return false
+            }else{
+                return true
+            }
+        })
+        
+    },
+
+    clear(){
+        this.selectedFilter=[]
+    }
   },
 };
 </script>
